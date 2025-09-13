@@ -1,0 +1,38 @@
+Sub ReplaceSutonnyQuotesContextAware()
+    Dim rng As Range
+    Dim i As Long
+    Dim ch As String
+    Dim prevCh As String
+    Dim nextCh As String
+    
+    Set rng = ActiveDocument.Content
+    
+    For i = rng.Start To rng.End - 1
+        ch = Mid(ActiveDocument.Range(i, i + 1).Text, 1, 1)
+        
+        If ch = "'" Then   ' ???? ???? ??? ???? ??? ???? ASCII 39 ????? ????
+            prevCh = ""
+            nextCh = ""
+            
+            If i > rng.Start Then
+                prevCh = Mid(ActiveDocument.Range(i - 1, i).Text, 1, 1)
+            End If
+            
+            If i < rng.End - 1 Then
+                nextCh = Mid(ActiveDocument.Range(i + 1, i + 2).Text, 1, 1)
+            End If
+            
+            ' Opening quote: ??? ??? ?????, ????? ?? ????????? ????
+            If prevCh = " " Or prevCh = vbCr Or prevCh = vbTab Or prevCh = "" Then
+                ActiveDocument.Range(i, i + 1).Text = "Ò"
+            
+            ' Closing quote: ??? ??? ?????, ??? ?????, ????????? ????
+            ElseIf nextCh = " " Or nextCh = "." Or nextCh = "," Or nextCh = vbCr Or nextCh = vbTab Or nextCh = "" Then
+                ActiveDocument.Range(i, i + 1).Text = "Ó"
+            End If
+        End If
+    Next i
+    
+    MsgBox "Context ??????? ?????? ??????? ??? ??? (Ò … Ó)", vbInformation
+End Sub
+
