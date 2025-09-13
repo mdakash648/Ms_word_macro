@@ -1,0 +1,35 @@
+Sub BoldTitles_KeepFonts()
+    Dim para As Paragraph
+    Dim rng As Range
+    Dim txt As String
+    Dim colonPos As Long
+    
+    Application.ScreenUpdating = False
+    
+    For Each para In ActiveDocument.Paragraphs
+        txt = Trim(para.Range.Text)
+        
+        ' প্যারাগ্রাফ খালি হলে skip করো
+        If Len(txt) = 0 Then GoTo NextPara
+        
+        Set rng = para.Range.Duplicate
+        rng.End = rng.End - 1   ' paragraph mark বাদ
+        
+        ' Case A: যদি colon থাকে → colon পর্যন্ত bold করো
+        colonPos = InStr(txt, ":")
+        If colonPos > 0 And colonPos < 120 Then
+            rng.End = para.Range.Start + colonPos
+            rng.Font.Bold = True
+        Else
+            ' Case B: যদি colon না থাকে কিন্তু ছোট heading টাইপ হয়
+            If Len(txt) < 80 And Not (Right(txt, 1) = "." Or Right(txt, 1) = "।") Then
+                rng.Font.Bold = True
+            End If
+        End If
+        
+NextPara:
+    Next para
+    
+    Application.ScreenUpdating = True
+    MsgBox "✅ সব টাইটেল Bold হয়েছে (ফন্ট পরিবর্তন হয়নি)", vbInformation
+End Sub
