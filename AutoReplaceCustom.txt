@@ -1,0 +1,54 @@
+Option Explicit
+
+Sub AutoReplaceCustom()
+    ' === আপনার কাস্টম রিপ্লেস লিস্ট ===
+    ' নোট: Szstem → system ধরা হয়েছে। চাইলে নিচে "system" এর জায়গায় "Political" লিখে দিন।
+    Dim pairs As Variant
+    pairs = Array( _
+        Array("studzing", "studying"), _
+        Array("studz", "study"), _
+        Array("Szstem", "system"), _
+        Array("problmes", "problems"), _
+        Array("ocupying", "occupying"), _
+        Array("organised", "organized"), _
+        Array("bodz", "body"), _
+        Array("governent", "government"), _
+        Array("Szlhet", "Sylhet"), _
+        Array("Szncretism", "Syncretism") _
+    )
+    
+    Dim i As Long
+    For i = LBound(pairs) To UBound(pairs)
+        ReplaceEverywhere CStr(pairs(i)(0)), CStr(pairs(i)(1))
+    Next i
+    
+    MsgBox "All done! Custom replacements applied.", vbInformation
+End Sub
+
+Private Sub ReplaceEverywhere(findText As String, replaceText As String)
+    Dim sr As Range
+    Dim subR As Range
+    
+    ' সব StoryRange (Main doc, Header, Footer, Footnotes, Textboxes ইত্যাদি) কভার করবে
+    For Each sr In ActiveDocument.StoryRanges
+        Set subR = sr
+        Do While Not subR Is Nothing
+            With subR.Find
+                .ClearFormatting
+                .Replacement.ClearFormatting
+                .Text = findText
+                .Replacement.Text = replaceText
+                .Forward = True
+                .Wrap = wdFindContinue
+                .Format = False
+                .MatchCase = False           ' ক্যাস-ইনসেনসিটিভ
+                .MatchWholeWord = True       ' শুধু পুরো শব্দ হবে, মাঝখানে নয়
+                .MatchWildcards = False
+                .MatchSoundsLike = False
+                .MatchAllWordForms = False
+                .Execute Replace:=wdReplaceAll
+            End With
+            Set subR = subR.NextStoryRange
+        Loop
+    Next sr
+End Sub
