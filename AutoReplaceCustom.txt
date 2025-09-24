@@ -14,6 +14,11 @@ Sub AutoReplaceCustom()
         Array("bodz", "body"), _
         Array("governent", "government"), _
         Array("Szlhet", "Sylhet"), _
+        Array("Szmbols", "Symbols"), _
+        Array("Szmbol", "Symbol"), _
+        Array("Globalisation", "Globalization"), _
+        Array("Modernisation", "Modernization"), _
+        Array("Marginalisation", "Marginalization"), _
         Array("Szncretism", "Syncretism") _
     )
     
